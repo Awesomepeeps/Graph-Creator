@@ -128,17 +128,17 @@ public:
             return;
         }
 
-        bool visited[MAXV];
-        int distances[MAXV];
-        int prev[MAXV];
+        bool visited[MAXV]; // Contains whether a vertex has been visited or not
+        int distances[MAXV]; // The minimum distance from starting vertex to all others
+        int prev[MAXV]; // The previous vertex visited
 
-        for (int i = 0; i < MAXV; i++) {
+        for (int i = 0; i < MAXV; i++) { // Initializing all three arrays above
             visited[i] = false;
             distances[i] = 2147483647;
             prev[i] = -1;
         }
 
-        distances[startIndex] = 0;
+        distances[startIndex] = 0; // Setting distance to starting to the lowest possible of zero
     }
 
 };
