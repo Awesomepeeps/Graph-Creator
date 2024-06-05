@@ -74,4 +74,8 @@ int main() {
     graph.addVertex("A");
     graph.addVertex("B");
     graph.addVertex("C");
+
+    graph.addEdge("A", "B", 1);
+    graph.addEdge("B", "C", 2);
+    graph.addEdge("A", "C", 4);
 }
