@@ -123,7 +123,7 @@ public:
         }
     }
 
-    // Shortest path from a start to end node
+    // Shortest path from a start to end node, geekforgeeks for help with printing
     void dijkstra(string start, string end) const {
         int startIndex = getVertexIndex(start);
         int endIndex = getVertexIndex(end);
