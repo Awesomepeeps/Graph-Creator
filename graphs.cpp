@@ -1,3 +1,8 @@
+// Author: Nikaansh
+// Last Edited: 6/4/24
+// This is directed, weighted graph creator with a dijkstra's algorithm to find the shortest path between two nodes 
+
+
 #include <iostream>
 #include <cstring>
 
@@ -139,6 +144,47 @@ public:
         }
 
         distances[startIndex] = 0; // Setting distance to starting to the lowest possible of zero
+
+        for (int count = 0; count < vertexCount - 1; count++) { // Once for every time except the starting one
+            int minDistance = 2147483647;
+            int currentVertex = -1;
+
+            for (int i = 0; i < vertexCount; i++) {
+                if (!visited[i] && distances[i] <= minDistance) { // If not visited yet and distanct is less than or equal to minimum
+                    minDistance = distances[i];
+                    currentVertex = i;
+                }
+            }
+
+            if (currentVertex == -1) { // If there is no other vertex with a possible distance then break out
+                break;
+            }
+
+            visited[currentVertex] = true; // Marks smallest vertex as visited
+
+            for (int i = 0; i < vertexCount; i++) { // Checks all neighboring vertices
+                if (!visited[i] && matrix[currentVertex][i] != -10 && distances[currentVertex] != 2147483647 && distances[currentVertex] + matrix[currentVertex][i] < distances[i]) {
+                    // If it hasen't been visited yet, if there is an edge between the two, and the updated one will be shorter that what is already the shortest
+                    distances[i] = distances[currentVertex] + matrix[currentVertex][i]; // Updates with new distance
+                    prev[i] = currentVertex; // Previous is updated
+                }
+            }
+        }
+
+        if (distances[endIndex] == 2147483647) { // If there is no path
+            cout << "No path from start to end exsists" << endl;
+        }
+        else { // If there is a path this prints it out
+            int totalWeight = distances[endIndex];
+            cout << "Shortest path: ";
+            int v = endIndex;
+            while (v != -1) {
+                cout << vertexLabels[v] << " ";
+                v = prev[v];
+            }
+            cout << "(Total Weight: " << totalWeight << ")" << endl;
+        }
+
     }
 
 };
@@ -148,16 +194,16 @@ int main() {
     string input;
     
     while (true) {
-        cout << "Do you want to add vertex, add edge, remove vertex, remove edge, print, dijkstra, quit?" << endl;
+        cout << "Do you want to add vertex (addV), add edge (addE), remove vertex (removeV), remove edge (removeE), print, dijkstra (dij), quit?" << endl;
         cin >> input;
 
-        if (input == "add vertex") {
+        if (input == "addV") {
             string label;
             cout << "Name: ";
             cin >> label;
             graph.addVertex(label);
         } 
-        else if (input == "add edge") {
+        else if (input == "addE") {
             string start;
             string end;
             int weight;
@@ -169,13 +215,13 @@ int main() {
             cin >> weight;
             graph.addEdge(start, end, weight);
         } 
-        else if (input == "remove vertex") {
+        else if (input == "removeV") {
             string label;
             cout << "Name: ";
             cin >> label;
             graph.removeVertex(label);
         } 
-        else if (input == "remove edge") {
+        else if (input == "removeE") {
             string start;
             string end;
             cout << "Starting vertex: ";
@@ -187,7 +233,7 @@ int main() {
         else if (input == "print") {
             graph.print();
         }
-        else if (input == "dijkstra") {
+        else if (input == "dij") {
             string start;
             string end;
             cout << "Starting vertex: ";
