@@ -36,10 +36,12 @@ public:
             if (getVertexIndex(label) == 0) {
                 vertexLabels[vertexCount] = label;
                 vertexCount++;
-            } else {
+            } 
+            else {
                 cout << "Vertex " << label << " already exists" << endl;
             }
-        } else {
+        } 
+        else {
             cout << "Max vertices reached" << endl;
         }
     }
@@ -50,8 +52,30 @@ public:
 
         if (startIndex != 0 && endIndex != 0) {
             matrix[startIndex][endIndex] = weight;
-        } else {
+        } 
+        else {
             cout << "One or both vertices not found" << endl;
+        }
+    }
+
+    void removeVertex(string label) {
+        int index = getVertexIndex(label);
+        if (index != 0) {
+            for (int i = index; i < vertexCount - 1; ++i) {
+                vertexLabels[i] = vertexLabels[i + 1];
+                for (int j = 0; j < vertexCount; ++j) {
+                    matrix[i][j] = matrix[i + 1][j];
+                    matrix[j][i] = matrix[j][i + 1];
+                }
+            }
+            vertexCount--;
+            for (int i = 0; i < vertexCount; ++i) {
+                matrix[vertexCount][i] = -10;
+                matrix[i][vertexCount] = -10;
+            }
+        } 
+        else {
+            cout << "Vertex " << label << " not found" << endl;
         }
     }
 
@@ -61,8 +85,32 @@ public:
 
         if (startIndex != 0 && endIndex != 0) {
             matrix[startIndex][endIndex] = -10;
-        } else {
+        } 
+        else {
             cout << "Edge not found" << endl;
+        }
+    }
+
+    void printmatrix() {
+        for (int i = 0; i < vertexCount; ++i) {
+            cout << vertexLabels[i] << ": ";
+            for (int j = 0; j < vertexCount; ++j) {
+                if (matrix[i][j] == -10) {
+                    cout << "(N/A) ";
+                } 
+                else {
+                    cout << "(" << vertexLabels[j] << ", " << matrix[i][j] << ") ";
+                }
+            }
+            cout << endl;
+        }
+    }
+
+    void dijkstra(string start) {
+        int startIndex = getVertexIndex(start);
+        if (startIndex == 0) {
+            cout << "Start vertex not found" << endl;
+            return;
         }
     }
 
