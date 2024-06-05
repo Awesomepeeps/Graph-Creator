@@ -7,38 +7,40 @@ using namespace std;
 
 class Graph {
 private:
-    int matrix[MAXV][MAXV];
-    string vertexLabels[MAXV];
+    int matrix[MAXV][MAXV]; // Matrix for edges and their weight 
+    string vertexLabels[MAXV]; // Array of string for the names of each vertex
     int vertexCount;
 
-    int getVertexIndex(string label) const {
-        for (int i = 0; i < vertexCount; ++i) {
-            if (vertexLabels[i] == label) {
-                return i;
-            }
-        }
-        return 0;
-    }
-
 public:
-
+    // Sets the count to 0 and all point in the matrix to "0"
     Graph() {
         vertexCount = 0;
-        for (int i = 0; i < MAXV; ++i) {
-            for (int j = 0; j < MAXV; ++j) {
-                matrix[i][j] = -10; // Use -10 end represent no edge
+        for (int row = 0; row < MAXV; row++) {
+            for (int column = 0; column < MAXV; column++) {
+                matrix[row][column] = -10; // Use -10 end represent no edge
             }
         }
     }
 
+    // Gets the index
+    int getVertexIndex(string label) const {
+        for (int row = 0; row < vertexCount; row++) {
+            if (vertexLabels[row] == label) {
+                return row;
+            }
+        }
+        return -11; // Cause 0 is already a index unfortunatly
+    }
+
+    // Adds a vertex with a name
     void addVertex(string label) {
-        if (vertexCount < MAXV) {
-            if (getVertexIndex(label) == 0) {
+        if (vertexCount < MAXV) { // Less than max of 20
+            if (getVertexIndex(label) == -11) { // Dosen't exist
                 vertexLabels[vertexCount] = label;
                 vertexCount++;
             } 
             else {
-                cout << "Vertex " << label << " already exists" << endl;
+                cout << "Vertex already exists" << endl;
             }
         } 
         else {
@@ -46,32 +48,34 @@ public:
         }
     }
 
+    // Adds an edge between two vertices and gives it a weight
     void addEdge(string start, string end, int weight) {
         int startIndex = getVertexIndex(start);
         int endIndex = getVertexIndex(end);
 
-        if (startIndex != 0 && endIndex != 0) {
+        if (startIndex != -11 && endIndex != -11) { // They both exsist
             matrix[startIndex][endIndex] = weight;
         } 
         else {
-            cout << "One or both vertices not found" << endl;
+            cout << "Vertex/vertices not found" << endl;
         }
     }
 
+    // Removes a vertex
     void removeVertex(string label) {
         int index = getVertexIndex(label);
-        if (index != 0) {
-            for (int i = index; i < vertexCount - 1; ++i) {
-                vertexLabels[i] = vertexLabels[i + 1];
-                for (int j = 0; j < vertexCount; ++j) {
-                    matrix[i][j] = matrix[i + 1][j];
-                    matrix[j][i] = matrix[j][i + 1];
+        if (index != -11) { // It exsists
+            for (int row = index; row < vertexCount - 1; row++) {
+                vertexLabels[row] = vertexLabels[row + 1]; // Shifts everything in the label array down one becuase one is being deleted
+                for (int column = 0; column < vertexCount; column++) { // Shifts everything in the edge array too
+                    matrix[row][column] = matrix[row + 1][column]; 
+                    matrix[column][row] = matrix[column][row + 1];
                 }
             }
             vertexCount--;
-            for (int i = 0; i < vertexCount; ++i) {
-                matrix[vertexCount][i] = -10;
-                matrix[i][vertexCount] = -10;
+            for (int row = 0; row < vertexCount; row++) { // Sets the last row to now be empty
+                matrix[vertexCount][row] = -10;
+                matrix[row][vertexCount] = -10;
             }
         } 
         else {
@@ -79,11 +83,12 @@ public:
         }
     }
 
+    // Removes an edge from the graph
     void removeEdge(string start, string end) {
         int startIndex = getVertexIndex(start);
         int endIndex = getVertexIndex(end);
 
-        if (startIndex != 0 && endIndex != 0) {
+        if (startIndex != -11 && endIndex != -11) { // It exsists
             matrix[startIndex][endIndex] = -10;
         } 
         else {
@@ -91,39 +96,108 @@ public:
         }
     }
 
-    void printmatrix() {
-        for (int i = 0; i < vertexCount; ++i) {
-            cout << vertexLabels[i] << ": ";
-            for (int j = 0; j < vertexCount; ++j) {
-                if (matrix[i][j] == -10) {
+    // Prints the matrix
+    void print() {
+        // Go through each row of the matrix
+        for (int row = 0; row < vertexCount; row++) {
+            // Print the label of the current row
+            cout << vertexLabels[row] << ": ";
+            
+            // Go through each column of the current row
+            for (int column = 0; column < vertexCount; column++) {
+                // Check for edge
+                if (matrix[row][column] == -10) {
                     cout << "(N/A) ";
                 } 
                 else {
-                    cout << "(" << vertexLabels[j] << ", " << matrix[i][j] << ") ";
+                    // Print the info for current edge
+                    cout << "(" << vertexLabels[column] << ", " << matrix[row][column] << ") ";
                 }
             }
             cout << endl;
         }
     }
 
-    void dijkstra(string start) {
+    // Shortest path from a start to end node
+    void dijkstra(string start, string end) const {
         int startIndex = getVertexIndex(start);
-        if (startIndex == 0) {
-            cout << "Start vertex not found" << endl;
+        int endIndex = getVertexIndex(end);
+
+        if (startIndex == -11 || endIndex == -11) { // One or both vertices do not exist
+            cout << "Start or end vertex not found" << endl;
             return;
         }
+
+        bool visited[MAXV];
+        int distances[MAXV];
+        int prev[MAXV];
+
+        for (int i = 0; i < MAXV; i++) {
+            visited[i] = false;
+            distances[i] = 2147483647;
+            prev[i] = -1;
+        }
+
+        distances[startIndex] = 0;
     }
 
 };
 
 int main() {
     Graph graph;
+    string input;
+    
+    while (true) {
+        cout << "Do you want to add vertex, add edge, remove vertex, remove edge, print, dijkstra, quit?" << endl;
+        cin >> input;
 
-    graph.addVertex("A");
-    graph.addVertex("B");
-    graph.addVertex("C");
-
-    graph.addEdge("A", "B", 1);
-    graph.addEdge("B", "C", 2);
-    graph.addEdge("A", "C", 4);
+        if (input == "add vertex") {
+            string label;
+            cout << "Name: ";
+            cin >> label;
+            graph.addVertex(label);
+        } 
+        else if (input == "add edge") {
+            string start;
+            string end;
+            int weight;
+            cout << "Starting vertex: ";
+            cin >> start;
+            cout << "Ending vertex: ";
+            cin >> end;
+            cout << "Weight: ";
+            cin >> weight;
+            graph.addEdge(start, end, weight);
+        } 
+        else if (input == "remove vertex") {
+            string label;
+            cout << "Name: ";
+            cin >> label;
+            graph.removeVertex(label);
+        } 
+        else if (input == "remove edge") {
+            string start;
+            string end;
+            cout << "Starting vertex: ";
+            cin >> start;
+            cout << "Ending vertex: ";
+            cin >> end;
+            graph.removeEdge(start, end);
+        } 
+        else if (input == "print") {
+            graph.print();
+        }
+        else if (input == "dijkstra") {
+            string start;
+            string end;
+            cout << "Starting vertex: ";
+            cin >> start;
+            cout << "Ending vertex: ";
+            cin >> end;
+            graph.dijkstra(start, end);
+        }
+        else if (input == "quit") {
+            break;
+        }
+    }
 }
