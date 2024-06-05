@@ -22,6 +22,15 @@ private:
 
 public:
 
+    Graph() {
+        vertexCount = 0;
+        for (int i = 0; i < MAXV; ++i) {
+            for (int j = 0; j < MAXV; ++j) {
+                matrix[i][j] = -10; // Use -10 end represent no edge
+            }
+        }
+    }
+
     void addVertex(string label) {
         if (vertexCount < MAXV) {
             if (getVertexIndex(label) == 0) {
@@ -34,6 +43,29 @@ public:
             cout << "Max vertices reached" << endl;
         }
     }
+
+    void addEdge(string start, string end, int weight) {
+        int startIndex = getVertexIndex(start);
+        int endIndex = getVertexIndex(end);
+
+        if (startIndex != 0 && endIndex != 0) {
+            matrix[startIndex][endIndex] = weight;
+        } else {
+            cout << "One or both vertices not found" << endl;
+        }
+    }
+
+    void removeEdge(string start, string end) {
+        int startIndex = getVertexIndex(start);
+        int endIndex = getVertexIndex(end);
+
+        if (startIndex != 0 && endIndex != 0) {
+            matrix[startIndex][endIndex] = -10;
+        } else {
+            cout << "Edge not found" << endl;
+        }
+    }
+
 };
 
 int main() {
